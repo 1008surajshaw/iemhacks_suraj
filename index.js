@@ -1,56 +1,34 @@
-const express =require("express");
-const app =express();
-const userRoutes =require("./routers/User");
-const profileRoutes =require("./routers/Profile");
-const paymentRoutes =require("./routers/Payment");
-const courseRoutes =require("./routers/Courses");
-const contactUsRoute =require("./routers/Contact")
-
-const database =require("./config/database");
-const cookieParser =require("cookie-parser");
-const cors =require("cors");
-const { cloudinaryConnect } =require("./config/cloudinary");
-const fileUpload = require("express-fileupload");
-const dotenv = require("dotenv");
-
-dotenv.config();
-
-const PORT =process.env.PORT || 5000;
-
-database.connect();
-//middleware
-app.use(express.json());
-app.use(cookieParser());
-app.use(
-    cors({
-        origin:"http://localhost:3000",
-        credentials:true,
-    })
-)
-app.use(
-    fileUpload({
-        useTempFiles:true,
-        tempFileDir:"/tmp",
-    })
-)
-//cloudinary connection
-
-cloudinaryConnect();
-
-app.use("/api/v1/auth",userRoutes);
-app.use("/api/v1/profile", profileRoutes);
-app.use("/api/v1/course", courseRoutes);
-app.use("/api/v1/payment", paymentRoutes);
-app.use("/api/v1/reach", contactUsRoute);
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./index.css";
+import { BrowserRouter } from "react-router-dom";
+import {Toaster} from "react-hot-toast"
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "./reducer"
+import { Provider } from "react-redux";
 
 
-app.get("/",(req,res) =>{
-    return res.json({
-        success:true,
-        message:"your server is running at port no.."
-    })
-})
 
-app.listen(PORT, () =>{
-    console.log(`app is running at port no ${PORT}`)
-})
+const store = configureStore({
+  reducer:rootReducer,
+});
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+   <Provider store={store}>
+    <BrowserRouter>
+       <App />
+       <Toaster/>
+     </BrowserRouter>
+   </Provider>
+  </React.StrictMode>
+);
+
+
+
+
+
+
+
